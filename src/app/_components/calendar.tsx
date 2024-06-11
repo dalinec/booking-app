@@ -3,6 +3,11 @@
 import React, { useState } from "react";
 import ReactCalendar from "react-calendar";
 import { add, format } from "date-fns";
+import {
+  INTERVAL,
+  STORE_CLOSING_TIME,
+  STORE_OPENING_TIME,
+} from "../constants/config";
 
 interface DateType {
   justDate: Date | null;
@@ -18,18 +23,19 @@ const Calendar = () => {
   const getTimes = () => {
     if (!date.justDate) return;
     const { justDate } = date;
-    const beggining = add(justDate, { hours: 9 });
-    const end = add(justDate, { hours: 17 });
-    const interval = 30; //minutes
+    const beggining = add(justDate, { hours: STORE_OPENING_TIME });
+    const end = add(justDate, { hours: STORE_CLOSING_TIME });
 
     const times = [];
-    for (let i = beggining; i <= end; i = add(i, { minutes: interval })) {
+    for (let i = beggining; i <= end; i = add(i, { minutes: INTERVAL })) {
       times.push(i);
     }
     return times;
   };
 
   const times = getTimes();
+
+  console.log(date.dateTime);
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
