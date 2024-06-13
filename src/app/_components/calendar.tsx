@@ -43,7 +43,10 @@ const Calendar = () => {
         <div className="flex gap-4">
           {times?.map((time, i) => {
             return (
-              <div className="rounded-md bg-gray-100 p-2" key={`time-${i}`}>
+              <div
+                className="rounded-md border border-gray-200 bg-gray-100 px-4 py-2"
+                key={`time-${i}`}
+              >
                 <button
                   type="button"
                   onClick={() =>

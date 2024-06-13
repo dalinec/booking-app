@@ -9,6 +9,7 @@
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 
 import { db } from "@/server/db";
 
@@ -24,10 +25,11 @@ import { db } from "@/server/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  const { res, req } = opts;
   return {
-    db,
-    ...opts,
+    res,
+    req,
   };
 };
 
