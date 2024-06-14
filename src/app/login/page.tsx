@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
-import React, { ChangeEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
 import { HiLockClosed } from "react-icons/hi";
+import { api } from "@/trpc/react"; //need to use this to acces the routes
 
 const LoginPage = () => {
   const [input, setInput] = useState({
@@ -13,12 +17,17 @@ const LoginPage = () => {
     setInput((prev) => ({ ...prev, [name]: value }));
   };
 
+  const { mutate: login } = api.admin.login.useMutation();
+
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
           {/* If this was a real login screen, you'd want a next/image here */}
           <Image
+            width={0}
+            height={0}
+            sizes="100vw"
             className="mx-auto h-12 w-auto"
             src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
             alt="Workflow"
@@ -40,7 +49,7 @@ const LoginPage = () => {
           <input type="hidden" name="remember" defaultValue="true" />
           <div className="-space-y-px rounded-md shadow-sm">
             <p className="pb-1 text-sm text-red-600">
-              {error && "Invalid login credentials"}
+              {"Invalid login credentials"}
             </p>
             <div>
               <label htmlFor="email-address" className="sr-only">
@@ -107,7 +116,7 @@ const LoginPage = () => {
               type="submit"
               onClick={(e) => {
                 e.preventDefault();
-                // login(input);
+                login(input);
               }}
               className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >

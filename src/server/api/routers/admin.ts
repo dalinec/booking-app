@@ -2,6 +2,9 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { z } from "zod";
 import { SignJWT } from "jose";
 import { nanoid } from "nanoid";
+import { getJwtSecretKey } from "@/lib/auth";
+import cookie from "cookie";
+import { TRPCError } from "@trpc/server";
 
 export const adminRouter = createTRPCRouter({
   login: publicProcedure
@@ -12,7 +15,7 @@ export const adminRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { res, req } = ctx;
+      const { res } = ctx;
       const { email, password } = input;
 
       if (
@@ -25,6 +28,20 @@ export const adminRouter = createTRPCRouter({
           .setIssuedAt()
           .setExpirationTime("1h")
           .sign(new TextEncoder().encode(getJwtSecretKey()));
+
+        res.setHeader(
+          "Set-Cookie",
+          cookie.serialize("user-token", token, {
+            httpOnly: true,
+            path: "/",
+            secure: process.env.NODE_ENV === "production",
+          }),
+        );
+        return { success: true };
       }
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Invalid email or password!",
+      });
     }),
 });
